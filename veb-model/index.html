@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veteran Economic Briefing Model</title>
+<style>
+  :root {
+    --maroon: #6b1a2a;
+    --gold: #c9a84c;
+    --dark: #1a1a1a;
+    --mid: #2d2d2d;
+    --light: #f5f0e8;
+    --muted: #888;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: var(--dark); color: var(--light); min-height: 100vh; }
+  header { background: var(--maroon); padding: 1.5rem 2rem; border-bottom: 3px solid var(--gold); }
+  header h1 { font-size: 1.6rem; color: var(--gold); letter-spacing: 0.05em; }
+  header p { font-size: 0.85rem; color: rgba(255,255,255,0.75); margin-top: 0.3rem; font-family: sans-serif; }
+  .back-link { display: inline-block; margin-top: 0.6rem; font-size: 0.8rem; color: var(--gold); font-family: sans-serif; text-decoration: none; opacity: 0.8; }
+  .back-link:hover { opacity: 1; text-decoration: underline; }
+  main { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+  .data-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .data-card { background: var(--mid); border: 1px solid #3a3a3a; border-top: 3px solid var(--gold); padding: 1rem 1.2rem; border-radius: 4px; }
+  .data-card .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-family: sans-serif; margin-bottom: 0.4rem; }
+  .data-card .value { font-size: 1.5rem; color: var(--gold); font-weight: bold; }
+  .data-card .sub { font-size: 0.72rem; color: var(--muted); font-family: sans-serif; margin-top: 0.2rem; }
+  .section-title { font-size: 1rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; font-family: sans-serif; border-bottom: 1px solid #3a3a3a; padding-bottom: 0.5rem; margin-bottom: 1.2rem; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+  @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+  .calc-panel, .results-panel { background: var(--mid); border: 1px solid #3a3a3a; border-radius: 6px; padding: 1.5rem; }
+  .input-group { margin-bottom: 1.1rem; }
+  .input-group label { display: block; font-size: 0.78rem; color: var(--muted); font-family: sans-serif; margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .input-group input[type=range] { width: 100%; accent-color: var(--gold); cursor: pointer; }
+  .input-group .val { font-size: 0.9rem; color: var(--light); font-family: sans-serif; margin-top: 0.2rem; }
+  .result-row { display: flex; justify-content: space-between; align-items: baseline; padding: 0.7rem 0; border-bottom: 1px solid #3a3a3a; }
+  .result-row:last-child { border-bottom: none; }
+  .result-row .r-label { font-size: 0.82rem; color: var(--muted); font-family: sans-serif; }
+  .result-row .r-value { font-size: 1.1rem; font-weight: bold; font-family: sans-serif; }
+  .r-value.ok { color: #a5d6a7; }
+  .r-value.warn { color: #fff176; }
+  .r-value.danger { color: #ef9a9a; }
+  .r-value.cost { color: #ef9a9a; }
+  .bar-wrap { background: #3a3a3a; border-radius: 3px; height: 22px; overflow: hidden; margin-bottom: 0.5rem; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--maroon), var(--gold)); transition: width 0.4s ease; }
+  .bar-label { font-size: 0.75rem; color: var(--muted); font-family: sans-serif; display: flex; justify-content: space-between; }
+  .source-note { font-size: 0.72rem; color: var(--muted); font-family: sans-serif; line-height: 1.6; margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #3a3a3a; }
+  .table-wrap { overflow-x: auto; margin-bottom: 2rem; }
+  table { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 0.82rem; }
+  th { background: var(--maroon); color: var(--gold); padding: 0.6rem 0.8rem; text-align: left; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.72rem; }
+  td { padding: 0.55rem 0.8rem; border-bottom: 1px solid #3a3a3a; color: var(--light); }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+  .hl td { color: var(--gold); font-weight: bold; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Veteran Economic Briefing Model</h1>
+  <p>Military Risk &middot; Fuel Prices &middot; Household Purchasing Power &nbsp;|&nbsp; Data through May 2026</p>
+  <a class="back-link" href="https://big-sarge.blog/2026/05/26/veteran-economic-briefing/" target="_blank">&#8592; Read the full briefing at Big-Sarge.Blog</a>
+</header>
+<main>
+  <section style="margin-bottom:2rem;">
+    <div class="section-title">Current Baseline Data (EIA / BLS / CBO &mdash; May 2026)</div>
+    <div class="data-strip">
+      <div class="data-card"><div class="label">Regular Gasoline</div><div class="value">$4.50</div><div class="sub">per gal &middot; wk ending May 11, 2026</div></div>
+      <div class="data-card"><div class="label">On-Highway Diesel</div><div class="value">$5.64</div><div class="sub">per gal &middot; wk ending May 11, 2026</div></div>
+      <div class="data-card"><div class="label">CPI All-Items YoY</div><div class="value">3.8%</div><div class="sub">April 2026 &middot; BLS</div></div>
+      <div class="data-card"><div class="label">Gasoline CPI YoY</div><div class="value">28.4%</div><div class="sub">April 2026 &middot; energy 17.9%</div></div>
+      <div class="data-card"><div class="label">FY2026 NDAA</div><div class="value">$890.6B</div><div class="sub">authorized &middot; CBO full req $961B</div></div>
+    </div>
+  </section>
+  <section style="margin-bottom:2rem;">
+    <div class="section-title">Fuel Price Series</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Series</th><th>2024 Avg</th><th>2025 Avg</th><th>2026 YTD Avg</th><th>Latest Weekly</th></tr></thead>
+        <tbody>
+          <tr><td>Regular Gasoline</td><td>$3.30/gal</td><td>$3.10/gal</td><td>$3.50/gal</td><td style="color:var(--gold);font-weight:bold;">$4.50/gal</td></tr>
+          <tr><td>On-Highway Diesel</td><td>$3.76/gal</td><td>$3.66/gal</td><td>$4.57/gal</td><td style="color:var(--gold);font-weight:bold;">$5.64/gal</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section style="margin-bottom:2rem;">
+    <div class="section-title">National Defense Authorizations</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>FY</th><th>NDAA Topline</th><th>DoD Base</th><th>DOE Natl Security</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>FY2024</td><td>$883.7B</td><td>$841.4B</td><td>$32.4B</td><td>+$0.4B defense activities</td></tr>
+          <tr><td>FY2025</td><td>$883.7B</td><td>&mdash;</td><td>&mdash;</td><td>Held flat</td></tr>
+          <tr class="hl"><td>FY2026</td><td>$890.6B</td><td>&mdash;</td><td>&mdash;</td><td>CBO full request $961B incl. $113B reconciliation</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section style="margin-bottom:2rem;">
+    <div class="section-title">Household Impact Calculator</div>
+    <div class="grid-2">
+      <div class="calc-panel">
+        <div class="input-group"><label>Deployment Duration (months)</label><input type="range" id="duration" min="1" max="24" value="6" oninput="calc()"><div class="val" id="v-duration">6 months</div></div>
+        <div class="input-group"><label>Fuel Price Shock (% above baseline)</label><input type="range" id="shock" min="0" max="60" value="28" oninput="calc()"><div class="val" id="v-shock">28%</div></div>
+        <div class="input-group"><label>Monthly Gasoline (gallons)</label><input type="range" id="gallons" min="10" max="150" value="50" oninput="calc()"><div class="val" id="v-gallons">50 gal/mo</div></div>
+        <div class="input-group"><label>Diesel-Linked Exposure (gal-equiv)</label><input type="range" id="diesel" min="0" max="80" value="20" oninput="calc()"><div class="val" id="v-diesel">20 gal-equiv/mo</div></div>
+        <div class="input-group"><label>Diesel Pass-Through Rate (%)</label><input type="range" id="passthru" min="0" max="100" value="35" oninput="calc()"><div class="val" id="v-passthru">35%</div></div>
+        <div class="input-group"><label>Monthly Gross Income</label><input type="range" id="income" min="1500" max="12000" value="4200" step="100" oninput="calc()"><div class="val" id="v-income">$4,200 / mo</div></div>
+        <div class="input-group"><label>Baseline Discretionary Income</label><input type="range" id="discret" min="100" max="3000" value="600" step="50" oninput="calc()"><div class="val" id="v-discret">$600 / mo</div></div>
+      </div>
+      <div class="results-panel">
+        <div class="section-title" style="margin-bottom:1rem;">Output</div>
+        <div class="result-row"><div class="r-label">Direct monthly fuel-cost increase</div><div class="r-value cost" id="r-direct">&mdash;</div></div>
+        <div class="result-row"><div class="r-label">Indirect diesel-linked cost increase</div><div class="r-value cost" id="r-indirect">&mdash;</div></div>
+        <div class="result-row"><div class="r-label">Total monthly shock</div><div class="r-value cost" id="r-monthly">&mdash;</div></div>
+        <div class="result-row"><div class="r-label">Cumulative loss over duration</div><div class="r-value cost" id="r-cumulative">&mdash;</div></div>
+        <div class="result-row"><div class="r-label">Remaining discretionary income</div><div class="r-value" id="r-remaining">&mdash;</div></div>
+        <div class="result-row"><div class="r-label">Discretionary drawdown (%)</div><div class="r-value" id="r-pct" style="color:var(--muted);">&mdash;</div></div>
+        <div style="margin-top:1.5rem;">
+          <div style="font-size:0.72rem;color:var(--muted);font-family:sans-serif;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.6rem;">Budget Consumed by Shock</div>
+          <div class="bar-wrap"><div class="bar-fill" id="bar" style="width:0%"></div></div>
+          <div class="bar-label"><span>0%</span><span id="bar-pct">0%</span><span>100%+</span></div>
+        </div>
+        <div id="verdict" style="margin-top:1rem;padding:0.8rem;border-radius:4px;font-family:sans-serif;font-size:0.82rem;background:#1a1a1a;line-height:1.6;"></div>
+      </div>
+    </div>
+  </section>
+  <div class="source-note">
+    <strong>Sources:</strong> EIA U.S. gasoline and diesel retail prices (weekly, eia.gov) &bull;
+    BLS Consumer Price Index April 2026 release (bls.gov) &bull;
+    FY2024 NDAA conference executive summary (Senate Armed Services Committee) &bull;
+    CRS FY2026 NDAA summary (everycrsreport.com) &bull;
+    CBO defense and national security budget analysis (cbo.gov).
+    Model built for scenario analysis, not prediction. Assumptions are analyst-controlled.
+  </div>
+</main>
+<script>
+function fmt(n){return '$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function calc(){
+  const duration=+document.getElementById('duration').value;
+  const shock=+document.getElementById('shock').value/100;
+  const gallons=+document.getElementById('gallons').value;
+  const diesel=+document.getElementById('diesel').value;
+  const passthru=+document.getElementById('passthru').value/100;
+  const income=+document.getElementById('income').value;
+  const discret=+document.getElementById('discret').value;
+  const gasBase=4.50, dslBase=5.64;
+  const direct=gallons*gasBase*shock;
+  const indirect=diesel*dslBase*shock*passthru;
+  const monthly=direct+indirect;
+  const cumul=monthly*duration;
+  const remain=discret-monthly;
+  const pct=discret>0?(monthly/discret)*100:0;
+  document.getElementById('v-duration').textContent=duration+' month'+(duration===1?'':'s');
+  document.getElementById('v-shock').textContent=document.getElementById('shock').value+'%';
+  document.getElementById('v-gallons').textContent=gallons+' gal/mo';
+  document.getElementById('v-diesel').textContent=diesel+' gal-equiv/mo';
+  document.getElementById('v-passthru').textContent=document.getElementById('passthru').value+'%';
+  document.getElementById('v-income').textContent='$'+income.toLocaleString()+' / mo';
+  document.getElementById('v-discret').textContent='$'+discret.toLocaleString()+' / mo';
+  document.getElementById('r-direct').textContent='+'+fmt(direct)+'/mo';
+  document.getElementById('r-indirect').textContent='+'+fmt(indirect)+'/mo';
+  document.getElementById('r-monthly').textContent='+'+fmt(monthly)+'/mo';
+  document.getElementById('r-cumulative').textContent='-'+fmt(cumul);
+  const remEl=document.getElementById('r-remaining');
+  remEl.textContent=fmt(remain)+(remain<0?' (deficit)':'');
+  remEl.className='r-value '+(remain>=200?'ok':remain>=0?'warn':'danger');
+  document.getElementById('r-pct').textContent=pct.toFixed(1)+'%';
+  const bp=Math.min(pct,100);
+  document.getElementById('bar').style.width=bp+'%';
+  document.getElementById('bar-pct').textContent=pct.toFixed(1)+'% of discretionary';
+  let v='';
+  if(remain>=400)v='<span style="color:#a5d6a7;">&#9899; Household absorbs the shock. Discretionary margin holds above $400/mo.</span>';
+  else if(remain>=100)v='<span style="color:#fff176;">&#9888; Tight margin. +'+fmt(monthly).slice(1)+'/mo in additional fuel costs. Non-essential spending compresses.</span>';
+  else if(remain>=0)v='<span style="color:#ffcc80;">&#9888; Critical. Less than $100/mo remains. Prescription splits and deferred maintenance become likely.</span>';
+  else v='<span style="color:#ef9a9a;">&#9940; Deficit. Shock exceeds discretionary income by '+fmt(Math.abs(remain)).slice(1)+'/mo. Debt or family support required.</span>';
+  if(duration>=12)v+='<br><span style="color:#888;font-size:0.78rem;">Over '+duration+' months the cumulative cost is '+fmt(cumul)+'.</span>';
+  document.getElementById('verdict').innerHTML=v;
+}
+calc();
+</script>
+</body>
+</html>
