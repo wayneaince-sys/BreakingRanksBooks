@@ -19,8 +19,9 @@ Vintage scrapbook collage posters featuring Wayne, generated with Perplexity Com
 File: `wayne-scrapbook-collage-poster-v6.png`
 Change from v5: swapped the center three-quarter/front-facing portrait for a true side profile. Everything else preserved.
 
-### v5 — Jeremiah 29:11 restored *(workspace-only, not committed here)*
-Change from v4: added the Jeremiah 29:11 verse card tucked under the fatherhood + puppy Polaroid.
+### v5 — Jeremiah 29:11 restored
+File: `wayne-scrapbook-collage-poster-v5.png`
+Change from v4: added the Jeremiah 29:11 verse card ("For I know the plans I have for you...") tucked under the fatherhood + puppy Polaroid on aged parchment with a subtle gold-foil edge.
 
 ### v4 — Fatherhood + Cavapoo swap
 File: `wayne-scrapbook-collage-poster-v4.png`
